@@ -74,12 +74,12 @@ public:
 	}
 
 	////this is an example of adding a mesh object read from obj file
-	int Add_Object_1()
+	int Add_Object_1(float x, float y, float z)
 	{
 		auto mesh_obj=Add_Interactive_Object<OpenGLTriangleMesh>();
 
 		////read mesh file
-		std::string obj_file_name="bunny.obj";
+		std::string obj_file_name="plane.obj";
 		Array<std::shared_ptr<TriangleMesh<3> > > meshes;
 		Obj::Read_From_Obj_File_Discrete_Triangles(obj_file_name,meshes);
 		mesh_obj->mesh=*meshes[0];
@@ -97,7 +97,7 @@ public:
 			glm::mat4(1.f,0.f,0.f,0.f,		////column 0
 					  0.f,1.f,0.f,0.f,		////column 1
 					  0.f,0.f,1.f,0.f,		////column 2
-					  0.f,1.f,0.f,1.f);		////column 3	////set the translation in the last column
+					  x, y, z, 1.f);		////column 3	////set the translation in the last column
 
 		////set up shader
 		//mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_1_shadow"));//Shadow TODO: uncomment this line and comment next line to use shadow shader
@@ -211,13 +211,15 @@ public:
 
 	virtual void Initialize_Data()
 	{
+		const float offset = 4.96;
 		Add_Shaders();
 		Add_Textures();
 
 		Add_Background();
-		Add_Object_1();
-		Add_Object_2();
-		Add_Object_3();
+		Add_Object_1(0.f, 0.f, 0.f); // Top right
+		//Add_Object_1(-offset, 0.f, 0.f); // Top left
+		//Add_Object_1(0.f, -offset, 0.f); // Bottom right
+		//Add_Object_1(-offset, -offset, 0.f); // Bottom left
 
 		//Init_Lighting(); ////SHADOW TODO: uncomment this line
 	}

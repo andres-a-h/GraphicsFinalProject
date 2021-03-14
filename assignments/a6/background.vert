@@ -7,6 +7,7 @@ out vec3 vtx_frg_pos;
 
 void main()
 {
+
 	gl_Position=vec4(pos.xyz,1.f);
 	vtx_frg_pos=pos.xyz;
 }

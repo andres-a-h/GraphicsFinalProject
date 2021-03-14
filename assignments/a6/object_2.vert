@@ -19,7 +19,7 @@ layout (location=0) in vec4 pos;		/*vertex position*/
 layout (location=1) in vec4 color;		/*vertex color*/
 layout (location=2) in vec4 normal;		/*vertex normal*/	
 layout (location=3) in vec4 uv;			/*vertex uv*/		
-layout (location=4) in vec4 tangent;	/*vertex tangent*/	
+layout (location=4) in vec4 tangent;	/*vertex tangent*/
 
 /*output variables*/
 out vec3 vtx_pos;

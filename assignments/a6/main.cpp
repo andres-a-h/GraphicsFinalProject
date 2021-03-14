@@ -62,8 +62,8 @@ public:
 		////format: image name, texture name 
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_albedo.png", "object_1_albedo");		
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_normal.png", "object_1_normal");
-		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_albedo.png", "object_2_albedo"); 
-		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_normal.png", "object_2_normal");
+		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("8k_stars_milky_way.jpg", "object_2_albedo"); 
+		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("8k_stars_milky_way.jpg", "object_2_normal");
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_albedo.png", "object_3_albedo");		
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_normal.png", "object_3_normal");
 
@@ -215,7 +215,7 @@ public:
 	// This function demonstrates how to manipulate the color and normal arrays of a mesh on the CPU end
 	// The updated colors and normals will be sent to GPU for rendering automatically 
 	void Update_Vertex_Color_And_Normal_For_Mesh_Object(OpenGLTriangleMesh* obj)
-	{
+	{ 
 		int vn = (int)obj->mesh.Vertices().size();				// number of vertices of a mesh
 		std::vector<Vector3>& vertices = obj->mesh.Vertices();
 		std::vector<Vector3i>& elements = obj->mesh.Elements();
@@ -223,7 +223,7 @@ public:
 		std::vector<Vector4f>& vtx_color = obj->vtx_color;
 		vtx_color.resize(vn);
 		std::fill(vtx_color.begin(), vtx_color.end(), Vector4f::Zero());
-
+		
 		for (int i = 0; i < vn; i++) {
 			vtx_color[i] = Vector4f(0., 1., 0., 1.); // specify color for each vertex
 		}
@@ -236,6 +236,7 @@ public:
 
 		Add_Background();
 		Add_Object_1(0.f, 0.f, 0.f);
+		Add_Object_1(10.f, 10.f, 0.f);
 		int skySphereIndex = Add_Object_2(); // Sky Sphere 
 		Update_Vertex_Color_And_Normal_For_Mesh_Object(mesh_object_array[skySphereIndex]);
 

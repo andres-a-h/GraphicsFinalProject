@@ -22,8 +22,21 @@ layout (location=3) in vec4 uv;			/*vertex uv*/
 layout (location=4) in vec4 tangent;	/*vertex tangent*/	
 
 /*output variables*/
+out vec3 vtx_pos;
+out vec4 vtx_color;
+out vec2 vtx_uv;
+out vec4 vtx_normal;
+out vec4 vtx_tangent;
 
 void main()												
 {
+	// camera-transformed position. do not modify
 	gl_Position=pvm*vec4(pos.xyz,1.f);
+
+	// output variables
+	vtx_pos = pos.xyz;
+	vtx_color = vec4(1.f, 0.f, 0.f, 1.f);
+	vtx_uv = uv.xy;
+	vtx_normal = normal;
+	vtx_tangent = tangent;
 }	

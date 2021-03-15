@@ -33,6 +33,7 @@ vec2 hash2(vec2 v)
 	return rand;
 }
 
+
 /* Simplex Noise Function Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83 */
 vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 float simplex_noise(vec2 v) 
@@ -79,7 +80,7 @@ float height(vec2 v){
 	float e = 2.71;
 	// Your implementation starts here
 	h = pow(3*noiseOctave(v/30, 12), 2);
-
+	if (h < 0.1) { h = pow(3*noiseOctave(v/30, 4), 2); }
 	// Your implementation ends here
 	return h;
 }

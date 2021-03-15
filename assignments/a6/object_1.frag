@@ -33,11 +33,11 @@ vec2 hash2(vec2 v)
 	return rand;
 }
 
+/* Simplex Noise Function Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83 */
 vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-
-float perlin_noise(vec2 v) 
+float simplex_noise(vec2 v) 
 {
-	const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+  const vec4 C = vec4(0.211324865405187, 0.366025403784439,
            -0.577350269189626, 0.024390243902439);
   vec2 i  = floor(v + dot(v, C.yy) );
   vec2 x0 = v -   i + dot(i, C.xx);
@@ -68,7 +68,7 @@ float noiseOctave(vec2 v, int num)
 	float sum = 0;
 	// Your implementation starts here
 	for (int i = 1; i <= num; i++) {
-		sum += pow(2,-i) * perlin_noise(pow(2, i) * v);
+		sum += pow(2,-i) * simplex_noise(pow(2, i) * v);
 	}
 	// Your implementation ends here
 	return sum;
@@ -78,8 +78,7 @@ float height(vec2 v){
     float h = 0;
 	float e = 2.71;
 	// Your implementation starts here
-	float mtns =  noiseOctave((v)/5, 12);
-	h = mtns;
+	h = pow(3*noiseOctave(v/30, 12), 2);
 
 	// Your implementation ends here
 	return h;
@@ -108,35 +107,22 @@ vec3 get_color(vec2 v)
 	vec3 vtx_normal = compute_normal(v, 0.01);
 	vec3 emissiveColor = vec3(0,0,0);
 	vec3 lightingColor= vec3(1.,1.,1.);
-	vec3 color_mountains = vec3(90., 92., 97.)/255.;
-	vec3 color_ground = vec3(22., 35., 0.)/255.;
+	vec3 color_mountains = vec3(84., 71., 64.)/255.;
+	vec3 color_ground = vec3(10., 27., 48.)/255.;
 	vec3 water_color = vec3(23., 45., 89.)/255.;
-	vec3 grad1 = mix(color_ground, color_mountains, vtx_pos.z/0.5);
+	vec3 grad1 = mix(color_ground, color_mountains, vtx_pos.z/1.5);
 
 
 	/*This part is the same as your previous assignment. Here we provide a default parameter set for the hard-coded lighting environment. Feel free to change them.*/
 	const vec3 LightPosition = vec3(8, 2, 8);
-	const vec3 LightIntensity = vec3(200);
+	const vec3 LightIntensity = vec3(250);
 	const vec3 ka = 0.1 *vec3(1., 1., 1.);
 	const vec3 kd = 0.7*vec3(1., 1., 1.);
 	const vec3 ks = vec3(2.);
 	const float n = 400.0;
 
+	emissiveColor = grad1;
 
-	if (height(v) > 0.5) {
-		emissiveColor = vec3(1.0);
-	}
-	else if (height(v) < 0.03) {
-		emissiveColor = water_color - vec3(0.1, 0.1, 0.1);
-	}
-	else if (height(v) < 0.05) {
-		emissiveColor = water_color;
-	}
-	else {
-		emissiveColor = grad1;
-	}
-
-	
 	vec3 normal = normalize(vtx_normal.xyz);
 	vec3 lightDir = LightPosition - vtx_pos;
 	float _lightDist = length(lightDir);

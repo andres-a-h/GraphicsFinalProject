@@ -164,6 +164,7 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 	Array<Vector3> vtx_normal;
 
 	GLfloat iTime = 0;
+	glm::vec2 offset = vec2(0.f);
 
 	void setTime(GLfloat time) { iTime = time; }
 
@@ -322,6 +323,7 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 			std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 			shader->Begin();
 			shader->Set_Uniform("iTime", iTime);
+			shader->Set_Uniform("offset", offset);
 
 			for (int i = 0; i < textures.size(); i++) {
 				shader->Set_Uniform(textures[i].binding_name, i);

@@ -77,7 +77,7 @@ public:
 	}
 
 	////this is an example of adding a mesh object read from obj file
-	int Add_Object_1(float x, float y, float z)
+	int Add_Object_1(float x, float y, float z, glm::vec2 off)
 	{
 		auto mesh_obj=Add_Interactive_Object<OpenGLTriangleMesh>();
 
@@ -102,6 +102,8 @@ public:
 					  0.f,0.f,1.f,0.f,		////column 2
 					  x, y, z, 1.f);		////column 3	////set the translation in the last column
 
+		mesh_obj->offset = off;
+
 		////set up shader
 		//mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_1_shadow"));//Shadow TODO: uncomment this line and comment next line to use shadow shader
 		mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_1"));
@@ -124,7 +126,7 @@ public:
 	{
 		auto mesh_obj=Add_Interactive_Object<OpenGLTriangleMesh>();
 
-		real radius=50.;
+		real radius=100.;
 		Initialize_Sphere_Mesh(radius,&mesh_obj->mesh,3);		////add a sphere with radius=1. if the obj file name is not specified
 		
 		////set up shader
@@ -219,7 +221,6 @@ public:
 		int vn = (int)obj->mesh.Vertices().size();				// number of vertices of a mesh
 		std::vector<Vector3>& vertices = obj->mesh.Vertices();
 		std::vector<Vector3i>& elements = obj->mesh.Elements();
-
 		std::vector<Vector4f>& vtx_color = obj->vtx_color;
 		vtx_color.resize(vn);
 		std::fill(vtx_color.begin(), vtx_color.end(), Vector4f::Zero());
@@ -231,12 +232,20 @@ public:
 
 	virtual void Initialize_Data()
 	{
+		const float offset = 4.9f;
 		Add_Shaders();
 		Add_Textures();
 
 		Add_Background();
-		Add_Object_1(0.f, 0.f, 0.f);
-		Add_Object_1(10.f, 10.f, 0.f);
+		int i = 1;
+		int j = 1;
+		int scale = 5;
+		for (i = 0; i < scale; i++) {
+			for (j = 0; j < scale; j++) {
+				Add_Object_1(0.f, 0.f, 0.f, glm::vec2(i*offset, j*offset));
+			}
+		}
+
 		int skySphereIndex = Add_Object_2(); // Sky Sphere 
 		Update_Vertex_Color_And_Normal_For_Mesh_Object(mesh_object_array[skySphereIndex]);
 

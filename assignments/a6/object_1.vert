@@ -22,6 +22,7 @@ layout (location=3) in vec4 uv;			/*vertex uv*/
 layout (location=4) in vec4 tangent;	/*vertex tangent*/
 
 uniform mat4 model;						////model matrix
+uniform vec2 offset;
 
 /*output variables*/
 out vec3 vtx_pos;
@@ -77,7 +78,7 @@ float height(vec2 v){
     float h = 0;
 	float e = 2.71;
 	// Your implementation starts here
-	float mtns =  noiseOctave(v/5, 12);
+	float mtns =  noiseOctave((v)/5, 12);
 	h = mtns;
 
 	// Your implementation ends here
@@ -86,7 +87,7 @@ float height(vec2 v){
 
 void main()												
 {
-	vec4 world_pos = pos;
+	vec4 world_pos = vec4(pos.xy + offset, pos.z, pos.w);
 	vtx_pos = (vec4(world_pos.xy, height(world_pos.xy), 1)).xyz;
 	gl_Position= projection*view*model*vec4(vtx_pos.xyz,1.f);
 }	

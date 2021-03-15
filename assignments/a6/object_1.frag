@@ -18,6 +18,7 @@ layout (std140) uniform camera
 uniform vec2 iResolution;
 uniform float iTime;
 uniform int iFrame;			
+uniform vec2 offset;
 
 uniform sampler2D tex_albedo;			////texture color
 uniform sampler2D tex_normal;			////texture normal
@@ -77,7 +78,7 @@ float height(vec2 v){
     float h = 0;
 	float e = 2.71;
 	// Your implementation starts here
-	float mtns =  noiseOctave(v/5, 12);
+	float mtns =  noiseOctave((v)/5, 12);
 	h = mtns;
 
 	// Your implementation ends here
@@ -114,8 +115,8 @@ vec3 get_color(vec2 v)
 
 
 	/*This part is the same as your previous assignment. Here we provide a default parameter set for the hard-coded lighting environment. Feel free to change them.*/
-	const vec3 LightPosition = vec3(1, 2.5, 3);
-	const vec3 LightIntensity = vec3(30);
+	const vec3 LightPosition = vec3(8, 2, 8);
+	const vec3 LightIntensity = vec3(200);
 	const vec3 ka = 0.1 *vec3(1., 1., 1.);
 	const vec3 kd = 0.7*vec3(1., 1., 1.);
 	const vec3 ks = vec3(2.);

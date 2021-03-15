@@ -55,6 +55,7 @@ public:
 		OpenGLShaderLibrary::Instance()->Add_Shader_From_File("object_1.vert","object_1.frag","object_1");	
 		OpenGLShaderLibrary::Instance()->Add_Shader_From_File("object_2.vert","object_2.frag","object_2");
 		OpenGLShaderLibrary::Instance()->Add_Shader_From_File("object_3.vert","object_3.frag","object_3");	
+		OpenGLShaderLibrary::Instance()->Add_Shader_From_File("moon.vert", "moon.frag", "moon");
 	}
 
 	void Add_Textures()
@@ -66,6 +67,8 @@ public:
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("8k_stars_milky_way.jpg", "object_2_normal");
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_albedo.png", "object_3_albedo");		
 		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("earth_normal.png", "object_3_normal");
+		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("8k_moon.jpg", "moon_albedo");
+		OpenGLTextureLibrary::Instance()->Add_Texture_From_File("MoonNormal.png", "moon_normal");
 
 	}
 
@@ -77,7 +80,7 @@ public:
 	}
 
 	////this is an example of adding a mesh object read from obj file
-	int Add_Object_1(float x, float y, float z)
+	int Add_Object_1(float x, float y, float z, glm::vec2 off)
 	{
 		auto mesh_obj=Add_Interactive_Object<OpenGLTriangleMesh>();
 
@@ -102,6 +105,8 @@ public:
 					  0.f,0.f,1.f,0.f,		////column 2
 					  x, y, z, 1.f);		////column 3	////set the translation in the last column
 
+		mesh_obj->offset = off;
+
 		////set up shader
 		//mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_1_shadow"));//Shadow TODO: uncomment this line and comment next line to use shadow shader
 		mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_1"));
@@ -124,7 +129,7 @@ public:
 	{
 		auto mesh_obj=Add_Interactive_Object<OpenGLTriangleMesh>();
 
-		real radius=50.;
+		real radius=100.;
 		Initialize_Sphere_Mesh(radius,&mesh_obj->mesh,3);		////add a sphere with radius=1. if the obj file name is not specified
 		
 		////set up shader
@@ -143,6 +148,32 @@ public:
 		mesh_obj->Initialize();	
 		mesh_object_array.push_back(mesh_obj);
 		return (int)mesh_object_array.size()-1;
+	}
+
+	////this is an example of adding a spherical mesh object generated analytically
+	int Add_Moon()
+	{
+		auto mesh_obj = Add_Interactive_Object<OpenGLTriangleMesh>();
+
+		real radius = 5.;
+		Initialize_Sphere_Mesh(radius, &mesh_obj->mesh, 3);		////add a sphere with radius=1. if the obj file name is not specified
+
+		////set up shader
+		//mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("object_2_shadow"));//Shadow TODO: uncomment this line and comment next line to use shadow shader
+		mesh_obj->Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("moon"));
+
+		////set up texture
+		mesh_obj->Add_Texture("tex_albedo", OpenGLTextureLibrary::Get_Texture("moon_albedo"));
+		mesh_obj->Add_Texture("tex_normal", OpenGLTextureLibrary::Get_Texture("moon_normal"));
+
+		Set_Polygon_Mode(mesh_obj, PolygonMode::Fill);
+		Set_Shading_Mode(mesh_obj, ShadingMode::Texture);//SHADOW TODO: Set Shading Mode to Shadow
+
+		////initialize
+		mesh_obj->Set_Data_Refreshed();
+		mesh_obj->Initialize();
+		mesh_object_array.push_back(mesh_obj);
+		return (int)mesh_object_array.size() - 1;
 	}
 
 	////this is an example of adding an object with manually created triangles and vertex attributes
@@ -219,7 +250,6 @@ public:
 		int vn = (int)obj->mesh.Vertices().size();				// number of vertices of a mesh
 		std::vector<Vector3>& vertices = obj->mesh.Vertices();
 		std::vector<Vector3i>& elements = obj->mesh.Elements();
-
 		std::vector<Vector4f>& vtx_color = obj->vtx_color;
 		vtx_color.resize(vn);
 		std::fill(vtx_color.begin(), vtx_color.end(), Vector4f::Zero());
@@ -231,14 +261,25 @@ public:
 
 	virtual void Initialize_Data()
 	{
+		const float offset = 4.9f;
 		Add_Shaders();
 		Add_Textures();
 
 		Add_Background();
-		Add_Object_1(0.f, 0.f, 0.f);
-		Add_Object_1(10.f, 10.f, 0.f);
+		int i = 1;
+		int j = 1;
+		int scale = 3; // Number of tiles: scale x scale
+		for (i = 0; i < scale; i++) {
+			for (j = 0; j < scale; j++) {
+				Add_Object_1(0.f, 0.f, 0.f, glm::vec2(i*offset, j*offset));
+			}
+		}
+
 		int skySphereIndex = Add_Object_2(); // Sky Sphere 
 		Update_Vertex_Color_And_Normal_For_Mesh_Object(mesh_object_array[skySphereIndex]);
+
+		int moonIndex = Add_Moon(); // Moon
+		Update_Vertex_Color_And_Normal_For_Mesh_Object(mesh_object_array[moonIndex]);
 
 		//Init_Lighting(); ////SHADOW TODO: uncomment this line
 	}

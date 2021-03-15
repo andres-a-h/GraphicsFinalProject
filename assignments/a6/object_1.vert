@@ -22,6 +22,7 @@ layout (location=3) in vec4 uv;			/*vertex uv*/
 layout (location=4) in vec4 tangent;	/*vertex tangent*/
 
 uniform mat4 model;						////model matrix
+uniform vec2 offset;
 
 /*output variables*/
 out vec3 vtx_pos;
@@ -32,11 +33,12 @@ vec2 hash2(vec2 v)
 	return rand;
 }
 
-vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
 
-float perlin_noise(vec2 v) 
+/* Simplex Noise Function Source: https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83 */
+vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
+float simplex_noise(vec2 v) 
 {
-	const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+  const vec4 C = vec4(0.211324865405187, 0.366025403784439,
            -0.577350269189626, 0.024390243902439);
   vec2 i  = floor(v + dot(v, C.yy) );
   vec2 x0 = v -   i + dot(i, C.xx);
@@ -67,7 +69,7 @@ float noiseOctave(vec2 v, int num)
 	float sum = 0;
 	// Your implementation starts here
 	for (int i = 1; i <= num; i++) {
-		sum += pow(2,-i) * perlin_noise(pow(2, i) * v);
+		sum += pow(2,-i) * simplex_noise(pow(2, i) * v);
 	}
 	// Your implementation ends here
 	return sum;
@@ -77,16 +79,15 @@ float height(vec2 v){
     float h = 0;
 	float e = 2.71;
 	// Your implementation starts here
-	float mtns =  noiseOctave(v/5, 12);
-	h = mtns;
-
+	h = pow(3*noiseOctave(v/30, 12), 2);
+	if (h < 0.1) { h = pow(3*noiseOctave(v/30, 4), 2); }
 	// Your implementation ends here
 	return h;
 }
 
 void main()												
 {
-	vec4 world_pos = pos;
+	vec4 world_pos = vec4(pos.xy + offset, pos.z, pos.w);
 	vtx_pos = (vec4(world_pos.xy, height(world_pos.xy), 1)).xyz;
 	gl_Position= projection*view*model*vec4(vtx_pos.xyz,1.f);
 }	

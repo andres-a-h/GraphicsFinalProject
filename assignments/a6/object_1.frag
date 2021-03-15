@@ -79,7 +79,7 @@ float height(vec2 v){
 	float e = 2.71;
 	// Your implementation starts here
 	h = pow(3*noiseOctave(v/30, 12), 2);
-	if (h < 0.1) { h = pow(3*noiseOctave(v/30, 4), 2); }
+	if (h < 0.1) { h = pow(3*noiseOctave(v/(30 + 0.2*(sin(iTime*PI))), 6), 2); }
 	// Your implementation ends here
 	return h;
 }
@@ -199,7 +199,7 @@ vec3 get_color(vec2 v)
 
 		// ambient + diffusive + specular
 		if (pow(3*noiseOctave(v/30, 12), 2) < 0.1) {
-			col += ka*emissiveColor + emissiveColor*lightingColor/4 + ks*emissiveColor*pow(s_max, 50);
+			col += ka*emissiveColor + emissiveColor*lightingColor/4 + ks*emissiveColor*pow(s_max, 50 + 10*(sin(iTime*PI)));
 		}
 		else {
 			col += ka*emissiveColor + emissiveColor*lightingColor + ks/8*emissiveColor*pow(s_max, n);
@@ -215,7 +215,6 @@ void main()
 	vec3 fog1 = vec3(0);
 	vec3 fog2 = vec3(0);
 
-	// Range Based Fog Source: https://stackoverflow.com/questions/27898985/range-based-fog-in-glsl
 	// Low level fog
 	if (vtx_pos.z < 2* 0.5-noiseOctave(vtx_pos.xy/7, 12)) {
 		float dist = distance(vtx_pos, position.xyz);	

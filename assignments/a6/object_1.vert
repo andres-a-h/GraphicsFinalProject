@@ -23,6 +23,7 @@ layout (location=4) in vec4 tangent;	/*vertex tangent*/
 
 uniform mat4 model;						////model matrix
 uniform vec2 offset;
+uniform float iTime;
 
 /*output variables*/
 out vec3 vtx_pos;
@@ -80,7 +81,7 @@ float height(vec2 v){
 	float e = 2.71;
 	// Your implementation starts here
 	h = pow(3*noiseOctave(v/30, 12), 2);
-	if (h < 0.1) { h = pow(3*noiseOctave(v/30, 4), 2); }
+	if (h < 0.1) { h = pow(3*noiseOctave(v/(30 + 0.2*(sin(iTime*PI))), 6), 2); }
 	// Your implementation ends here
 	return h;
 }

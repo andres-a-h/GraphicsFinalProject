@@ -268,7 +268,7 @@ public:
 		Add_Background();
 		int i = 1;
 		int j = 1;
-		int scale = 5; // Number of tiles: scale x scale
+		int scale = 3; // Number of tiles: scale x scale
 		for (i = 0; i < scale; i++) {
 			for (j = 0; j < scale; j++) {
 				Add_Object_1(0.f, 0.f, 0.f, glm::vec2(i*offset, j*offset));

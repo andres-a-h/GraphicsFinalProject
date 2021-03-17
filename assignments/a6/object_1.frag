@@ -162,7 +162,7 @@ vec3 get_color(vec2 v)
 	//vec3 LightPosition = vec3(20, -5, 12);
 	vec3 LightPosition[2];
 	LightPosition[0] = vec3(20, -7, 12); // General world light
-	LightPosition[1] = vec3(50, 80, 10); // Moon light
+	LightPosition[1] = vec3(60.f, 60.f, 15.f); // Moon light
 	// const vec3 LightIntensity = vec3(550);
 	vec3 LightIntensity[2];
 	LightIntensity[0] = vec3(350); // General world light

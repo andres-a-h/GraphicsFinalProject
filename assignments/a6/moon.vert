@@ -32,7 +32,7 @@ out vec3 sphere_origin;
 void main()												
 {
 	// output variables
-	vec3 offset = vec3(60.f, 80.f, 15.f);
+	vec3 offset = vec3(60.f, 60.f, 15.f);
 	sphere_origin = offset;
 	vec3 world_pos = pos.xyz + offset;
 	vtx_pos = world_pos;
